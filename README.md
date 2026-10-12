@@ -1,5 +1,26 @@
 # LLM Kong: A Pattern for using Slow Reasoning LLMs for Fast Games
 
+**TL;DR**
+
+- **Why:** reasoning models think in seconds and always will; games, robots and trading systems act in
+  milliseconds. The fast layer can be a decision model or plain code (see
+  [LLM Invaders](https://github.com/alexcpn/llm-invaders)); this project asks the other half: how can a
+  slow, deep-thinking model still drive what a fast system does?
+- **Pattern:** slow mind, fast hands. The LLM never touches the 20 Hz game loop. Every ~20 s, and when you
+  lose a life or clear a level, a reasoning model (Claude Haiku 5.5) studies how you play and sets 8 typed
+  knobs for a deterministic Kong (throw rate, speed and route mix, bursts, ladder ambush, rhythm, lulls,
+  where he stands). The engine carries that policy out every 50 ms tick, and the game never waits for it.
+- **Guard rails:** every knob change is clamped and rate-limited, and a fairness guard simulates it
+  against a near-perfect player and vetoes anything unwinnable. The model sets policy; it never acts
+  directly.
+- **What it does:** a plan answers in about 6-9 s and takes effect 8-13 s after it is asked for, more than
+  100 times slower than a game frame, yet it is real strategy: in the GIF below the model notices the
+  player favours the x=8 and x=48 ladders and has never had a barrel come down a ladder while climbing,
+  and arms a ladder ambush for x=48.
+- **Cost:** about half a cent to a cent per minute of play with Haiku (the GIF's 70 s game cost $0.012).
+  With faster providers (gpt-oss-120b on Cerebras, ~2 s per plan) a third, per-move "tactician" role
+  becomes possible.
+- **Not measured yet:** whether LLM Kong beats real players more often than a scripted Kong.
 
 ![A 70-second game against the live LLM Kong: a bot climbs the girders while Kong throws barrels; under the board, Kong's thinking: "KONG IS THINKING" with a seconds counter while a call is out, then what the model wrote about the player and why](docs/images/gameplay.gif)
 
