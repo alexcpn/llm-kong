@@ -1,8 +1,8 @@
 # Using Slow Reasoning LLMs for Fast Games
 
-## AI Kong - A fun take on Donkey Kong
+## LLM Kong - A fun take on Donkey Kong
 
-Code and data: [github.com/alexcpn/ai-kong](https://github.com/alexcpn/ai-kong)
+Code and data: [github.com/alexcpn/llm-kong](https://github.com/alexcpn/llm-kong)
 
 *9 October 2026 · Alex Punnen*
 
@@ -24,9 +24,9 @@ The question this article answers: if even the fastest LLM is too slow for the g
 
 The LLM never touches the frame loop. Each role runs in a background thread, the engine polls for finished replies once a tick, and a check sits between every role and the game.
 
-![AI Kong architecture: three LLM roles (strategist, tactician, voice) above a deterministic 20 Hz engine, each with a check in between](images/architecture.png)
+![LLM Kong architecture: three LLM roles (strategist, tactician, voice) above a deterministic 20 Hz engine, each with a check in between](images/architecture.png)
 
-*AI Kong architecture · 3 LLM roles, 1 deterministic engine*
+*LLM Kong architecture · 3 LLM roles, 1 deterministic engine*
 
 - **Strategist.** Studies a compact player profile (where they wait, how early they jump, which ladders they use, how they died) and the results of its own earlier plans. It sets 8 typed knobs: throw rate, speed mix, route mix, burst chance, ladder ambush, rhythm jitter, hold-back lulls and where Kong stands. Every change is clamped, rate-limited, and simulated against a near-perfect player before it applies.
 - **Tactician.** Possible only with sub-second inference. At each Kong decision it reads the live board and the strategist's plan and picks the actual throws. If it misses a 1.2 s deadline, Kong uses the knob-driven throws for that window.
@@ -50,7 +50,7 @@ Through OpenRouter, the fastest setups answered a taunt in 0.37 s, chose a move 
 
 ![Median seconds per call for taunt replies, tactician calls and strategy calls across models and providers, with worst-of-5 lines; calls over 2 s are shaded](images/measured-latency.png)
 
-*Measured 9 Oct 2026 through OpenRouter, provider pinned, strict JSON output · [data-2026-10.json](https://github.com/alexcpn/ai-kong/blob/main/docs/llm-speed/data-2026-10.json)*
+*Measured 9 Oct 2026 through OpenRouter, provider pinned, strict JSON output · [data-2026-10.json](https://github.com/alexcpn/llm-kong/blob/main/docs/llm-speed/data-2026-10.json)*
 
 Every call used the game's real prompt and a strict JSON schema, with the provider pinned and fallbacks off. The samples are small, so read the medians as orders of magnitude and the worst-of-5 lines as warnings.
 
@@ -73,7 +73,7 @@ The fast setup costs about 1 to 1.5 cents per minute of play, four to five times
 | Fast: gpt-oss-120b @ Cerebras medium, gpt-oss-20b @ Groq low, gpt-oss-120b @ Groq low | $0.0022 | $0.00012 | $0.0001 to $0.0003 | $0.010 to $0.015 |
 | Fast, cheaper: strategist gpt-oss-120b @ Groq low | $0.00067 | $0.00012 | $0.0001 to $0.0003 | about $0.006 |
 
-The live runs agree: a 28 s game with the fast setup cost $0.0093, and a 45 s game with the slow setup cost $0.0028. A 10-minute session costs about 10 to 15 cents fast, or 2 to 3 cents slow. AI Kong ships with the slow, cheap setup and offers the fast one as a configuration switch.
+The live runs agree: a 28 s game with the fast setup cost $0.0093, and a 45 s game with the slow setup cost $0.0028. A 10-minute session costs about 10 to 15 cents fast, or 2 to 3 cents slow. LLM Kong ships with the slow, cheap setup and offers the fast one as a configuration switch.
 
 ## What we learned
 
@@ -90,7 +90,7 @@ These are small samples: 3 to 5 calls per configuration, one machine, one day.
 
 ## What it means for robots
 
-Robots get around the latency problem by keeping the LLM out of the control loop, the same way AI Kong does. A slow model reasons and sets goals a few times a second. A small, fast policy turns those goals into motion at tens to hundreds of hertz. Classical controllers and safety reflexes run underneath and never wait on a model.
+Robots get around the latency problem by keeping the LLM out of the control loop, the same way LLM Kong does. A slow model reasons and sets goals a few times a second. A small, fast policy turns those goals into motion at tens to hundreds of hertz. Classical controllers and safety reflexes run underneath and never wait on a model.
 
 | System | Slow layer (reasons) | Fast layer (acts) | Where it runs |
 | --- | --- | --- | --- |
@@ -99,7 +99,7 @@ Robots get around the latency problem by keeping the LLM out of the control loop
 | [Physical Intelligence π0 with real-time chunking](https://www.pi.website/research/real_time_chunking) | One flow-matching VLA | 50-action chunks, 1 s of motion each | Works with 100–300 ms of inference delay, remote or local |
 | [Gemini Robotics On-Device](https://deepmind.google/discover/blog/gemini-robotics-on-device-brings-ai-to-local-robotic-devices/) | Gemini Robotics model, distilled | Same model | On the robot, no network needed |
 
-Two ideas carry over directly from AI Kong. First, the fast layer does not decode tokens one by one: a diffusion or flow-matching action head emits a whole chunk of motor commands in one pass, avoiding the token-by-token decoding that dominates our 2 s strategy calls. Second, the next chunk is computed while the current one plays, so model latency is hidden rather than waited on; that is our "never let the game wait" rule. Hardware like Cerebras makes the slow layer smarter per second, but safety-critical control stays on the robot.
+Two ideas carry over directly from LLM Kong. First, the fast layer does not decode tokens one by one: a diffusion or flow-matching action head emits a whole chunk of motor commands in one pass, avoiding the token-by-token decoding that dominates our 2 s strategy calls. Second, the next chunk is computed while the current one plays, so model latency is hidden rather than waited on; that is our "never let the game wait" rule. Hardware like Cerebras makes the slow layer smarter per second, but safety-critical control stays on the robot.
 
 ## Can a local model on the laptop do it?
 
@@ -138,7 +138,7 @@ Three properties matter for games. Its answer is always one of the options, so i
 
 ## Reproduce it
 
-The game, the director library and the benchmark scripts are in [github.com/alexcpn/ai-kong](https://github.com/alexcpn/ai-kong). The raw figures, sources and methods are in [`docs/llm-speed/data-2026-10.json`](https://github.com/alexcpn/ai-kong/blob/main/docs/llm-speed/data-2026-10.json), and [`docs/llm-speed/bench_*.py`](https://github.com/alexcpn/ai-kong/tree/main/docs/llm-speed) re-run each measurement through OpenRouter for well under a cent each (`bench_local_ollama.py` and `bench_tactics_quality.py` cover the local GPU, `bench_decision1.py` the decision model). The game ships with the cheap Haiku setup; the fast setup is one block in [`.config/config.env`](https://github.com/alexcpn/ai-kong/blob/main/.config/config.env).
+The game, the director library and the benchmark scripts are in [github.com/alexcpn/llm-kong](https://github.com/alexcpn/llm-kong). The raw figures, sources and methods are in [`docs/llm-speed/data-2026-10.json`](https://github.com/alexcpn/llm-kong/blob/main/docs/llm-speed/data-2026-10.json), and [`docs/llm-speed/bench_*.py`](https://github.com/alexcpn/llm-kong/tree/main/docs/llm-speed) re-run each measurement through OpenRouter for well under a cent each (`bench_local_ollama.py` and `bench_tactics_quality.py` cover the local GPU, `bench_decision1.py` the decision model). The game ships with the cheap Haiku setup; the fast setup is one block in [`.config/config.env`](https://github.com/alexcpn/llm-kong/blob/main/.config/config.env).
 
 ## Sources
 

@@ -1,6 +1,6 @@
 # LLM speed and cost data (October 2026)
 
-Published and measured inference speed and cost behind AI Kong's model choices, kept for the article
+Published and measured inference speed and cost behind LLM Kong's model choices, kept for the article
 draft and so the measurements can be repeated.
 
 - `data-2026-10.json`: all figures, with sources, methods and dates.

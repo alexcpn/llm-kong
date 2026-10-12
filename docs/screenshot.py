@@ -1,7 +1,7 @@
 """Render a game frame to a PNG the way a 256-colour terminal shows it (README screenshot, sprite checks).
 
-    python3 docs/screenshot.py . fancy 6 docs/images/screenshot.png        # repo root; "plain" = 8 colours
-    python3 docs/screenshot.py . fancy 6 out.png rage                       # Kong storming
+    python3 docs/screenshot.py . plain 12 docs/images/screenshot.png        # from the repo root
+    python3 docs/screenshot.py . plain 6 out.png rage                       # Kong storming
 """
 import sys
 sys.path.insert(0, sys.argv[1])
@@ -40,8 +40,6 @@ curses.COLORS, curses.COLOR_PAIRS = 256, 256
 for name, col in (("girder", curses.COLOR_YELLOW), ("danger", curses.COLOR_RED), ("ladder", curses.COLOR_CYAN),
                   ("player", curses.COLOR_GREEN), ("goal", curses.COLOR_MAGENTA), ("ui", curses.COLOR_WHITE)):
     curses.init_pair(render.PAIRS[name], col, -1)
-render._fancy = sys.argv[2] == "fancy"
-render._colour_index.update({k: render.nearest_256(*v) for k, v in render.RGB.items()})
 
 
 class Win:
@@ -88,7 +86,7 @@ if len(sys.argv) > 5 and sys.argv[5] == "rage":
     for _ in range(30): g.step(())
 h, w = render.needed_size(lay.to_dict())
 win = Win(h, w + 2)
-render.draw_game(win, lay.to_dict(), g.state(), {"score": 1200, "best": 5000, "opponent": "AI Kong",
+render.draw_game(win, lay.to_dict(), g.state(), {"score": 1200, "best": 5000, "opponent": "LLM Kong",
     "plan": "Ambush the x=48 climb with fast barrels", "banner": "", "popups": [],
     "said": ("pauline", "He's eyeing the left ladder! Hurry!"),
     "llm": "haiku-5.5 · plan 6.5s · lines 13.6s · 9 calls", "cost": "$0.0044",

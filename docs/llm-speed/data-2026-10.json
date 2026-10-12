@@ -1,6 +1,6 @@
 {
   "as_of": "2026-10-09",
-  "about": "Inference speed and cost for an LLM in a real-time game (AI Kong). 'published' = third-party pages as read on the as_of date; 'measured' = our own calls through OpenRouter from one machine on 2026-10-09, small samples (3-5 calls per row unless noted).",
+  "about": "Inference speed and cost for an LLM in a real-time game (LLM Kong). 'published' = third-party pages as read on the as_of date; 'measured' = our own calls through OpenRouter from one machine on 2026-10-09, small samples (3-5 calls per row unless noted).",
   "published": {
     "artificial_analysis_gpt_oss_120b": {
       "source": "https://artificialanalysis.ai/models/gpt-oss-120b/providers",

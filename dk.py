@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""AI Kong: Donkey Kong for the terminal, against a Kong that can think.
+"""LLM Kong: Donkey Kong for the terminal, against a Kong that can think.
 
   python3 dk.py                            # title menu
-  python3 dk.py --kong ai                  # straight into a game vs AI Kong
+  python3 dk.py --kong ai                  # straight into a game vs LLM Kong
   python3 dk.py --kong classic --board tall --seed 7   # no LLM, for testing
 
-Opponents: ai (AI Kong, an LLM that profiles how you play and re-plans Kong's tactics; needs an
+Opponents: ai (LLM Kong, an LLM that profiles how you play and re-plans Kong's tactics; needs an
 OpenRouter key, see README.md) and classic (scripted, no LLM: for testing without a key).
 Keys: arrows / WASD / hjkl move and climb, Space jumps (hold for extra height), P pauses, Q quits.
-Kong, Pauline and your character talk as you play (AI Kong: lines written by an LLM).
+Kong, Pauline and your character talk as you play (LLM Kong: lines written by an LLM).
 """
 
 from __future__ import annotations
@@ -30,7 +30,7 @@ from dkgame.cast import Cast  # noqa: E402
 from dkgame.kongs import SCRIPTED  # noqa: E402
 from dkgame.render import centre, draw_game, needed_size, put, setup_colors  # noqa: E402
 
-OPPONENTS = [("ai", "AI Kong"), ("classic", "Classic (no LLM)")]   # dkgame.kongs has more scripted Kongs
+OPPONENTS = [("ai", "LLM Kong"), ("classic", "Classic (no LLM)")]   # dkgame.kongs has more scripted Kongs
 BOARDS = [("random", "Random board"), ("classic", "Classic board"), ("tall", "Tall (6 girders)"),
           ("sparse", "Sparse (1 ladder each)")]
 KEYMAP = {curses.KEY_LEFT: "left", curses.KEY_RIGHT: "right", curses.KEY_UP: "up", curses.KEY_DOWN: "down",
@@ -54,7 +54,7 @@ def load_scores() -> dict:
         with open(score_path(), encoding="utf-8") as handle:
             data = json.load(handle)
         scores = {k: int(v) for k, v in data.items() if isinstance(v, (int, float)) and v >= 0}
-        if "director" in scores:                      # AI Kong was called "director" before
+        if "director" in scores:                      # LLM Kong was called "director" before
             scores["ai"] = max(scores.get("ai", 0), scores.pop("director"))
         return scores
     except (OSError, ValueError, AttributeError):
@@ -132,7 +132,7 @@ TITLE = [
     "▐█▌  ●   ●   ●",
     "▀█▀            ",
     "",
-    "A I   K O N G",
+    "L L M   K O N G",
     "Donkey Kong, against a Kong that thinks",
 ]
 
@@ -182,7 +182,7 @@ def menu(win, choice: dict, scores: dict, has_key: bool) -> dict | None:
 
 
 def ai_models() -> str:
-    """The models AI Kong will use (from the environment / .config/config.env), for the menu."""
+    """The models LLM Kong will use (from the environment / .config/config.env), for the menu."""
     from director import Layer
     roles = [("plan", Layer.from_env("director", "medium", 8000))]
     if os.environ.get("KONG_USE_TACTICIAN", "0") not in ("0", "off", "no"):
@@ -220,7 +220,7 @@ def play(win, opponent: str, board: str, seed: int, scores: dict) -> str:
     paused, next_tick = False, time.monotonic()
     cast = Cast(seed=seed)
     if hasattr(kong, "cast"):
-        kong.cast = cast                                   # AI Kong rewrites the lines as the game goes
+        kong.cast = cast                                   # LLM Kong rewrites the lines as the game goes
     speech = {"speaker": "", "text": "", "until": 0.0, "last": None}
 
     flash = {"score": 0, "lives": game.lives, "score_until": -1.0, "lives_until": -1.0}
@@ -324,7 +324,7 @@ def run(win, args) -> None:
             return
 
 
-# The game's AI Kong defaults: the cheapest setup (~$0.002-0.003 per minute), Claude Haiku 5.5 for the
+# The game's LLM Kong defaults: the cheapest setup (~$0.002-0.003 per minute), Claude Haiku 5.5 for the
 # strategist and the voice, no tactician. The fast setup (gpt-oss on Cerebras/Groq, with the tactician,
 # ~1-1.5 cents a minute) is in .config/config.env, commented. The shell or that file override these.
 LLM_DEFAULTS = {
@@ -366,7 +366,7 @@ def main() -> None:
     if args.kong == "director":
         args.kong = "ai"
     if args.kong == "ai" and load_api_key() is None:
-        raise SystemExit("AI Kong needs an OpenRouter key: see README.md")
+        raise SystemExit("LLM Kong needs an OpenRouter key: see README.md")
     try:
         curses.wrapper(lambda win: run(win, args))
     except KeyboardInterrupt:

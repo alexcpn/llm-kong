@@ -1,7 +1,7 @@
-# AI Kong: A Pattern for using Slow Reasoning LLMs for Fast Games
+# LLM Kong: A Pattern for using Slow Reasoning LLMs for Fast Games
 
 
-![AI Kong in a 256-colour terminal: Kong, Pauline, barrels and the player as half-block pixel sprites on red girders](docs/images/screenshot.png)
+![LLM Kong in the terminal: Kong at the top left, girders and ladders, Pauline at the top right and the player at the bottom](docs/images/screenshot.png)
 
 A terminal Donkey Kong where Kong can be driven by an LLM that **studies how you play and re-plans
 its tactics**, without ever making the game lag. Pure Python standard library: no installs
@@ -14,7 +14,7 @@ The article behind it, with published and measured LLM speed and cost data:
 ## Quick start
 
 ```bash
-git clone https://github.com/alexcpn/ai-kong.git && cd ai-kong
+git clone https://github.com/alexcpn/llm-kong.git && cd llm-kong
 
 python3 dk.py                                      # menu: pick an opponent and a board
 ```
@@ -41,15 +41,13 @@ It costs about 1-1.5 cents per minute. Switch by uncommenting the fast block in 
 (settings: `KONG_<ROLE>_MODEL`, `_REASONING`, `_PROVIDER` for `DIRECTOR`, `TACTICIAN`, `VOICE`, and
 `KONG_USE_TACTICIAN=1`). The measurements behind these numbers are in `docs/llm-speed/`.
 
-To configure AI Kong from files instead of the shell, put the key in
+To configure LLM Kong from files instead of the shell, put the key in
 `.config/opneroutere.env` (git-ignored; copy `.config/opneroutere.env.ex`) and settings in
 `.config/config.env`, then `pip install python-dotenv`. `dk.py` loads both at start-up, and
 variables already set in your shell take precedence.
 
-Use a terminal of at least 60 × 25 (60 × 29 for the Tall board). On a 256-colour terminal (most today)
-Kong, Pauline, the barrels and you are small pixel-art sprites; with fewer colours you get plain
-character art. Pick an opponent and a board in the menu, then climb to Pauline (`|♀|`)
-at the top while Kong throws barrels. From level 2, fireballs (`※`) roam the girders too.
+Use a terminal of at least 60 × 25 (60 × 29 for the Tall board). Pick an opponent and a board in the menu,
+then climb to Pauline (`|♀|`) at the top while Kong throws barrels. From level 2, fireballs (`※`) roam the girders too.
 
 ## Controls
 
@@ -65,11 +63,11 @@ at the top while Kong throws barrels. From level 2, fireballs (`※`) roam the g
 
 | Kong | Style |
 |---|---|
-| **AI Kong** | An LLM watches your habits (where you wait, how early you jump, which ladders you use, how you died) and re-plans Kong's tactics every ~20 seconds, and after every life you lose. Its current plan is shown under the board |
+| **LLM Kong** | An LLM watches your habits (where you wait, how early you jump, which ladders you use, how you died) and re-plans Kong's tactics every ~20 seconds, and after every life you lose. Its current plan is shown under the board |
 | Classic (no LLM) | Arcade rhythm: one barrel at a time, random routes. For testing without a key or network |
 
 **Kong moves and his barrels are limited**: he comes down from the top and roams about three girders
-above you, climbing as you climb (up to the top girder), and throws from wherever he is (AI Kong
+above you, climbing as you climb (up to the top girder), and throws from wherever he is (LLM Kong
 picks the spot, e.g. above a ladder you need). Catch him anywhere but the top girder and he's beaten.
 He has 45 barrels on level 1, 8 more each level, shown as `●×45` at the top; they refill on a new
 level, not when you lose a life.
@@ -100,7 +98,7 @@ The game is endless; you play for score. High scores are kept per opponent, in
 
 You have 3 lives, and each level has a time limit: running out costs a life. Each level is harder.
 
-## AI Kong
+## LLM Kong
 
 It needs an [OpenRouter](https://openrouter.ai) API key. Create the key file once in your own terminal:
 
@@ -110,7 +108,7 @@ printf 'OPENROUTER_API_KEY=%s\n' 'sk-or-...' > ~/.config/dk-game/openrouter.env
 chmod 600 ~/.config/dk-game/openrouter.env
 ```
 
-(or export `OPENROUTER_API_KEY`). See Quick start for AI Kong's three roles, their default models,
+(or export `OPENROUTER_API_KEY`). See Quick start for LLM Kong's three roles, their default models,
 speeds and costs. To use another model:
 
 ```bash
@@ -146,7 +144,7 @@ The bottom row shows the LLM side as you play: which models play Kong, their ave
 number of calls and the running cost (e.g. `LLM  haiku-5.5 · plan 6.5s · lines 13.6s · 9 calls  $0.0044`).
 The menu shows the models before you start, and the game-over line the total.
 
-Only AI Kong uses the network: it sends OpenRouter a summary of the game state and your play
+Only LLM Kong uses the network: it sends OpenRouter a summary of the game state and your play
 statistics. Nothing else leaves your machine.
 
 ## How it's built

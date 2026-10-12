@@ -1,6 +1,6 @@
 """Who says what, and when: Kong, Pauline and the player's character talk during play.
 
-The lines are written ahead of time (by an LLM for AI Kong, see director_kong.py; built-in defaults
+The lines are written ahead of time (by an LLM for LLM Kong, see director_kong.py; built-in defaults
 otherwise) and the game picks one the moment something happens, so speech never waits on a network
 call. Cast.react() turns engine events into at most one line at a time, rate-limited so the speech
 row stays readable.

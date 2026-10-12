@@ -1,4 +1,4 @@
-"""Microsoft-Decision-1 as AI Kong's tactician: one call answers every question for the next throw window.
+"""Microsoft-Decision-1 as LLM Kong's tactician: one call answers every question for the next throw window.
 
 It is a decisions model (calibrated probabilities over fixed options, no text), reached through
 OpenRouter's /api/alpha/decisions endpoint, not chat completions.
