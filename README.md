@@ -1,7 +1,14 @@
 # LLM Kong: A Pattern for using Slow Reasoning LLMs for Fast Games
 
 
-![LLM Kong in the terminal: Kong at the top left, girders and ladders, Pauline at the top right and the player at the bottom](docs/images/screenshot.png)
+![A 70-second game against the live LLM Kong: a bot climbs the girders while Kong throws barrels; under the board, Kong's thinking: "KONG IS THINKING" with a seconds counter while a call is out, then what the model wrote about the player and why](docs/images/gameplay.gif)
+
+*A real 70-second game at real speed against the live LLM Kong (Claude Haiku 5.5), with a bot playing
+you. Under the board is Kong's mind: while a strategist call is out it says "KONG IS THINKING" and counts
+the seconds; the game never waits, and Kong keeps throwing by his last plan. When the plan lands it
+shows what the model wrote: what it thinks of you ("Sees you") and its reasons ("Why"). The model
+answers in about 6-9 s; with the fairness check and Kong's next decision, a plan takes effect 8-13 s
+after it was asked for. This game cost $0.012. Regenerate with `python3 docs/make_gif.py`.*
 
 A terminal Donkey Kong where Kong can be driven by an LLM that **studies how you play and re-plans
 its tactics**, without ever making the game lag. Pure Python standard library: no installs
